@@ -51,6 +51,7 @@ public class UserController : BaseController
         return RedirectToAction("Index","Home");
     }
 
+
     // GET /user/register
     public IActionResult Register()
     {
@@ -60,13 +61,16 @@ public class UserController : BaseController
     // POST /user/register
     [HttpPost]
     // TBC add validate anti forgery token decorator
-    public IActionResult Register(/** TBC add bind **/ UserViewModel m)
+    [ValidateAntiForgeryToken]
+    public IActionResult Register([Bind("Email,Password,Password,Role")] UserViewModel m)
     {
         // TBC 
 
         // if email address is already in use 
-            //  add model state error for Email
+            // add model state error for Email
         // endif
+        
+
 
         // if valid modelstate
             //   call service to register user
@@ -98,7 +102,7 @@ public class UserController : BaseController
     // GET /user/errornotauthenticated
     public IActionResult ErrorNotAuthenticated()
     {
-         Alert("You must first Authenticate to carry out that action");
+        Alert("You must first Authenticate to carry out that action");
         return RedirectToAction("Login", "User"); 
     }
 
