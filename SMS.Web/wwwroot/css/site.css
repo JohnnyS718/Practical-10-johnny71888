@@ -35,7 +35,6 @@ body {
 .callout-primary {
   border-left-color: var(--bs-primary);
 }
-
 .callout-info {
   border-left-color: var(--bs-info);
 }
