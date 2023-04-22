@@ -13,7 +13,7 @@ public class UserController : BaseController
     private readonly IUserService svc;
 
     public UserController()
-    { 
+    {
         svc = new UserServiceDb();
     }
 
@@ -22,15 +22,14 @@ public class UserController : BaseController
     {
         return View();
     }
-
+    
     // TBC - add Profile Action - optional question
-
-
+    
     // POST /user/login
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login([Bind("Email,Password")]User m)
-    {        
+    public async Task<IActionResult> Login([Bind("Email,Password")] User m)
+    {
         // call service to Authenticate User
         var user = svc.Authenticate(m.Email, m.Password);
 
@@ -41,14 +40,14 @@ public class UserController : BaseController
             ModelState.AddModelError("Password", "Invalid Login Credentials");
             return View(m);
         }
-        
+
         // authenticated so sign user in using cookie authentication to store principal
-        
+
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             BuildClaimsPrincipal(user)
         );
-        return RedirectToAction("Index","Home");
+        return RedirectToAction("Index", "Home");
     }
 
 
@@ -62,25 +61,38 @@ public class UserController : BaseController
     [HttpPost]
     // TBC add validate anti forgery token decorator
     [ValidateAntiForgeryToken]
-    public IActionResult Register([Bind("Email,Password,Password,Role")] UserViewModel m)
+    public IActionResult Register([Bind("Name,Email,Password,PasswordConfirm,Role")] UserViewModel m)
     {
-        // TBC 
 
         // if email address is already in use 
-            // add model state error for Email
+        // add model state error for Email
         // endif
-        
-
+        var exists = svc.GetUserByEmail(m.Email);
+        if (exists != null)
+        {
+            ModelState.AddModelError("Email", "Email Address already in use");
+        }
 
         // if valid modelstate
-            //   call service to register user
-            //   Add alert indicating success and redirect to login
+        //   call service to register user
+        //   Add alert indicating success and redirect to login
         // endif
+        if (ModelState.IsValid)
+        {
+            var user = svc.Register(m.Name, m.Email, m.Password, m.Role);
+            if (user == null)
+            {
+                Alert("Unable to Register User", AlertType.warning);
+            }
+            else{
+                Alert("User Registered Successfully");
+                return RedirectToAction(nameof(Login));
+            }
+        }
 
         // redisplay view with validation errors
-        return View(m);   
+        return View(m);
     }
-
 
     // POST /user/logout
     [HttpPost]
@@ -93,36 +105,36 @@ public class UserController : BaseController
 
     // GET /user/errornotauthorised
     public IActionResult ErrorNotAuthorised()
-    {   
+    {
         Alert("You are not Authorised to Carry out that action");
         return RedirectToAction("Index", "Home");
     }
-    
-        
+
+
     // GET /user/errornotauthenticated
     public IActionResult ErrorNotAuthenticated()
     {
         Alert("You must first Authenticate to carry out that action");
-        return RedirectToAction("Login", "User"); 
+        return RedirectToAction("Login", "User");
     }
 
     // =========================== PRIVATE UTILITY METHODS ==============================
 
     // return a claims principle using the info from the user parameter
     private ClaimsPrincipal BuildClaimsPrincipal(User user)
-    { 
+    {
         // define user claims
         var claims = new ClaimsIdentity(new[]
         {
             new Claim(ClaimTypes.Sid, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Role, user.Role.ToString())                              
+            new Claim(ClaimTypes.Role, user.Role.ToString())
         }, CookieAuthenticationDefaults.AuthenticationScheme);
 
         // build principal using claims
-        return  new ClaimsPrincipal(claims);
-    }       
+        return new ClaimsPrincipal(claims);
+    }
 
 }
 

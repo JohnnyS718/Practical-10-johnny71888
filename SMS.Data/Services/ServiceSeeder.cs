@@ -22,6 +22,9 @@ public static class ServiceSeeder
     {
         // Note: do not call initialise here
         // TBC add dummy users admin, support and guest with password as the password for each user
+        var admin = svc.Register("administrator", "admin@mail.com", "password", Role.admin);
+        var guest = svc.Register("guest", "guest@mail.com", "password", Role.guest);
+        var support = svc.Register("support", "support@mail.com", "password", Role.support);
       
     }
 

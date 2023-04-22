@@ -7,11 +7,12 @@ using SMS.Data.Services;
 
 namespace SMS.Web.Controllers;
 
-public class StudentController : BaseController
+[Authorize]
+public class StudentController : BaseController 
 {
     private IStudentService svc;
     
-    public StudentController()
+    public StudentController() 
     {
         svc = new StudentServiceDb();            
     }
@@ -38,7 +39,9 @@ public class StudentController : BaseController
         return View(student);
     }
 
+    
     // GET: /student/create
+    [Authorize (Roles = "admin")]
     public IActionResult Create()
     {
         // display blank form to create a student
@@ -74,6 +77,7 @@ public class StudentController : BaseController
     }
 
     // GET /student/edit/{id}
+    [Authorize (Roles = "admin, support")]
     public IActionResult Edit(int id)
     {
         // load the student using the service
@@ -120,6 +124,7 @@ public class StudentController : BaseController
     }
 
     // GET / student/delete/{id}     
+    [Authorize (Roles = "admin")]
     public IActionResult Delete(int id)
     {
         // load the student using the service
@@ -158,6 +163,7 @@ public class StudentController : BaseController
      // ============== Student ticket management ==============
 
     // GET /student/ticketcreate/{id}
+    [Authorize (Roles = "admin, support")]
     public IActionResult TicketCreate(int id)
     {
         var student = svc.GetStudent(id);

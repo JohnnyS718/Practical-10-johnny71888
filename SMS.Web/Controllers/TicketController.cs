@@ -6,7 +6,8 @@ using SMS.Web.Models;
 using SMS.Data.Services;
 
 namespace SMS.Web.Controllers;
-   
+
+[Authorize]
 public class TicketController : BaseController
 {
     private readonly IStudentService svc;
@@ -26,6 +27,7 @@ public class TicketController : BaseController
     // POST /ticket/close/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize (Roles = "admin, support")]
     public IActionResult Close(int id)
     {
         // close ticket via service then check that ticket was closed
@@ -40,6 +42,7 @@ public class TicketController : BaseController
         return RedirectToAction(nameof(Index));
     }       
     
+    [Authorize (Roles = "admin, support")]
     // GET /ticket/create
     public IActionResult Create()
     {
