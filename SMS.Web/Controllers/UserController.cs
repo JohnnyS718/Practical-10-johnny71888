@@ -24,7 +24,7 @@ public class UserController : BaseController
     }
     
     // TBC - add Profile Action - optional question
-    
+
     // POST /user/login
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -134,6 +134,15 @@ public class UserController : BaseController
 
         // build principal using claims
         return new ClaimsPrincipal(claims);
+    }
+
+    // GET /user/profile
+    public IActionResult Profile()
+    {
+        var id = User.GetSignedInUserId();
+        var user = svc.GetUser(id);
+
+        return View(user);
     }
 
 }
