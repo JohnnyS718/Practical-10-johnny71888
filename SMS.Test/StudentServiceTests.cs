@@ -18,10 +18,10 @@ public class StudentServiceTests
         // ensure data source is empty before each test
         svc.Initialise();
     }
-    
+
     // =========================== GET ALL STUDENT TESTS =================================
 
-    [Fact] 
+    [Fact]
     public void GetAllStudents_WhenNoneExist_ShouldReturn0()
     {
         // act 
@@ -37,11 +37,11 @@ public class StudentServiceTests
     {
         // arrange       
         var s1 = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
         );
         var s2 = svc.AddStudent(
-            new Student { Name="YYY", Course="Engineering", Email="yyy@email.com", Age=23, Grade=0 }
-        );       
+            new Student { Name = "YYY", Course = "Engineering", Email = "yyy@email.com", Age = 23, Grade = 0 }
+        );
 
         // act
         var students = svc.GetStudents();
@@ -53,7 +53,7 @@ public class StudentServiceTests
 
     // =========================== GET SINGLE STUDENT TESTS =================================
 
-    [Fact] 
+    [Fact]
     public void GetStudent_WhenNoneExist_ShouldReturnNull()
     {
         // act 
@@ -63,12 +63,12 @@ public class StudentServiceTests
         Assert.Null(student);
     }
 
-    [Fact] 
+    [Fact]
     public void GetStudent_WhenAdded_ShouldReturnStudent()
     {
         // arrange 
         var s = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
         );
 
         // act
@@ -79,35 +79,35 @@ public class StudentServiceTests
         Assert.Equal(s.Id, ns.Id);
     }
 
-    [Fact] 
-    public void GetStudent_WithTickets_RetrievesStudentAndTickets()
+    [Fact]
+    public void GetStudent_WithTickets_RetrievesStudentAndTickets()
     {
         // arrange
-        var s = svc.AddStudent( 
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
+        var s = svc.AddStudent(
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
         );
-        svc.CreateTicket(s.Id, "Issue 1");  
+        svc.CreateTicket(s.Id, "Issue 1");
 
         // act      
         var ns = svc.GetStudent(s.Id);
-        
+
         // assert
         Assert.NotNull(ns);
         Assert.Equal(1, ns.Tickets.Count);
-  } 
+    }
 
 
-    [Fact] 
+    [Fact]
     public void GetStudentByEmail_WhenAdded_ShouldReturnStudent()
     {
         // arrange 
         var s = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
         );
 
         // act
         var ns = svc.GetStudentByEmail("xxx@email.com");
-
+        
         // assert
         Assert.NotNull(ns);
         Assert.Equal(s.Email, ns.Email);
@@ -120,15 +120,15 @@ public class StudentServiceTests
     {
         // arrange - add new student
         var added = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
         );
-        
+
         // act - try to retrieve the newly added student
         var s = svc.GetStudent(added.Id);
 
         // assert - that student is not null
         Assert.NotNull(s);
-        
+
         // now assert that the properties were set properly
         Assert.Equal(s.Id, s.Id);
         Assert.Equal("XXX", s.Name);
@@ -143,17 +143,17 @@ public class StudentServiceTests
     {
         // arrange
         var s1 = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=50 }
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 50 }
         );
 
         // act 
         var s2 = svc.AddStudent(
-            new Student { Name="YYY", Course="Maths", Email="xxx@email.com", Age=30, Grade=40 }
+            new Student { Name = "YYY", Course = "Maths", Email = "xxx@email.com", Age = 30, Grade = 40 }
         );
-        
+
         // assert
         Assert.NotNull(s1);
-        Assert.Null(s2);       
+        Assert.Null(s2);
     }
 
     [Fact] // --- AddStudent Invalid Grade Test
@@ -163,9 +163,9 @@ public class StudentServiceTests
 
         // act 
         var added = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=120 }
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 120 }
         );
-        
+
         // assert
         Assert.Null(added);
     }
@@ -177,12 +177,13 @@ public class StudentServiceTests
     {
         // arrange - create test student        
         var s = svc.AddStudent(
-            new Student { Name="ZZZ", Course="Computing", Email="zzz@email.com", Age=30, Grade=100 }
+            new Student { Name = "ZZZ", Course = "Computing", Email = "zzz@email.com", Age = 30, Grade = 100 }
         );
-                              
+
         // act - ** create a copy and update all student properties (except Id) **
-        var u = svc.UpdateStudent(           
-            new Student {
+        var u = svc.UpdateStudent(
+            new Student
+            {
                 Id = s.Id, // use original Id
                 Name = "XXX",
                 Email = "xxx@email.com",
@@ -190,13 +191,13 @@ public class StudentServiceTests
                 Age = 31,
                 Grade = 50
             }
-        ); 
+        );
 
         // reload updated student from database into new student object (us)
         var us = svc.GetStudent(s.Id);
 
         // assert
-        Assert.NotNull(us);           
+        Assert.NotNull(us);
 
         // now assert that the properties were set properly           
         Assert.Equal(u.Name, us.Name);
@@ -211,14 +212,14 @@ public class StudentServiceTests
     {
         // arrange
         var added = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=70 }
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 70 }
         );
 
         // act - update Grade with invalid value
         var updated = svc.UpdateStudent(
-            new Student { Id = added.Id, Grade=170, Name=added.Name, Course=added.Course, Email="xxx@email.com", Age=added.Age }    
+            new Student { Id = added.Id, Grade = 170, Name = added.Name, Course = added.Course, Email = "xxx@email.com", Age = added.Age }
         );
-        
+
         // assert
         Assert.NotNull(added);
         Assert.Null(updated);
@@ -229,17 +230,17 @@ public class StudentServiceTests
     {
         // arrange
         var s1 = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=70 }
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 70 }
         );
         var s2 = svc.AddStudent(
-            new Student { Name="YYY", Course="Maths", Email="yyy@email.com", Age=30, Grade=50 }
+            new Student { Name = "YYY", Course = "Maths", Email = "yyy@email.com", Age = 30, Grade = 50 }
         );
 
         // act - update s2 Email with duplicate value from s1
         var updated = svc.UpdateStudent(
-            new Student { Email = s1.Email, Id = s2.Id, Name=s2.Name, Course=s2.Course, Age=s2.Age, Grade=s2.Grade }    
+            new Student { Email = s1.Email, Id = s2.Id, Name = s2.Name, Course = s2.Course, Age = s2.Age, Grade = s2.Grade }
         );
-        
+
         // assert
         Assert.NotNull(s1);
         Assert.NotNull(s2);
@@ -252,9 +253,9 @@ public class StudentServiceTests
     {
         // arrange 
         var s = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
         );
-       
+
         // act
         var deleted = svc.DeleteStudent(s.Id);
 
@@ -275,25 +276,25 @@ public class StudentServiceTests
 
         // assert
         Assert.False(deleted);
-    }  
+    }
 
 
     // ---------------------- Ticket Tests ------------------------
-        
-    [Fact] 
+
+    [Fact]
     public void CreateTicket_ForExistingStudent_ShouldBeCreated()
     {
         // arrange
-         var s = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
-        );
+        var s = svc.AddStudent(
+           new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
+       );
         // act
         var t = svc.CreateTicket(s.Id, "Dummy Ticket 1");
-        
+
         // assert
         Assert.NotNull(t);
         Assert.Equal(s.Id, t.StudentId);
-        Assert.True(t.Active); 
+        Assert.True(t.Active);
     }
 
     [Fact] // --- GetTicket should include Student
@@ -301,7 +302,7 @@ public class StudentServiceTests
     {
         // arrange
         var s = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
+            new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
         );
         var t = svc.CreateTicket(s.Id, "Dummy Ticket 1");
 
@@ -311,16 +312,16 @@ public class StudentServiceTests
         // assert
         Assert.NotNull(ticket);
         Assert.NotNull(ticket.Student);
-        Assert.Equal(s.Name, ticket.Student.Name); 
+        Assert.Equal(s.Name, ticket.Student.Name);
     }
 
     [Fact] // --- GetOpenTickets When two added should return two 
     public void GetOpenTickets_WhenTwoAdded_ShouldReturnTwo()
     {
         // arrange
-         var s = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
-        );
+        var s = svc.AddStudent(
+           new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
+       );
         var t1 = svc.CreateTicket(s.Id, "Dummy Ticket 1");
         var t2 = svc.CreateTicket(s.Id, "Dummy Ticket 2");
 
@@ -328,16 +329,16 @@ public class StudentServiceTests
         var open = svc.GetOpenTickets();
 
         // assert
-        Assert.Equal(2,open.Count);                        
+        Assert.Equal(2, open.Count);
     }
 
-    [Fact] 
+    [Fact]
     public void CloseTicket_WhenOpen_ShouldReturnTicket()
     {
         // arrange
-         var s = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
-        );
+        var s = svc.AddStudent(
+           new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
+       );
         var t = svc.CreateTicket(s.Id, "Dummy Ticket");
 
         // act
@@ -348,13 +349,13 @@ public class StudentServiceTests
         Assert.False(r.Active);
     }
 
-    [Fact] 
+    [Fact]
     public void CloseTicket_WhenAlreadyClosed_ShouldReturnNull()
     {
         // arrange
-         var s = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
-        );
+        var s = svc.AddStudent(
+           new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
+       );
         var t = svc.CreateTicket(s.Id, "Dummy Ticket");
 
         // act
@@ -365,42 +366,42 @@ public class StudentServiceTests
         Assert.Null(closed);                    // no ticket returned as already closed
     }
 
-    [Fact] 
+    [Fact]
     public void DeleteTicket_WhenExists_ShouldReturnTrue()
     {
         // arrange
-         var s = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
-        );
+        var s = svc.AddStudent(
+           new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
+       );
         var t = svc.CreateTicket(s.Id, "Dummy Ticket");
 
         // act
         var deleted = svc.DeleteTicket(t.Id);     // delete ticket    
-        
+
         // assert
         Assert.True(deleted);                    // ticket should be deleted
-    }  
- 
+    }
 
-    [Fact] 
+
+    [Fact]
     public void DeleteTicket_WhenNonExistant_ShouldReturnFalse()
     {
         // arrange
-        
+
         // act
         var deleted = svc.DeleteTicket(1);     // delete non-existent ticket    
-        
+
         // assert
         Assert.False(deleted);                  // ticket should not be deleted
-    }  
+    }
 
-    [Fact] 
+    [Fact]
     public void DeleteTicket_WhenValid_ShouldBeRemovedFromStudent()
     {
         // arrange
-         var s = svc.AddStudent(
-            new Student { Name="XXX", Course="Computing", Email="xxx@email.com", Age=20, Grade=0 }
-        );
+        var s = svc.AddStudent(
+           new Student { Name = "XXX", Course = "Computing", Email = "xxx@email.com", Age = 20, Grade = 0 }
+       );
         var t = svc.CreateTicket(s.Id, "Dummy Ticket 1");
 
         // act

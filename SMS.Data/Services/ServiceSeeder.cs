@@ -68,7 +68,6 @@ public static class ServiceSeeder
         // close homers first ticket 
         svc.CloseTicket(t1.Id);
 
-        
     }
 }
 
